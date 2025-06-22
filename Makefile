@@ -35,7 +35,8 @@ OUTPUT = $(CURDIR)/output$(if $(HOST),-$(HOST))
 
 REL_TOP = ../../..
 
--include config.mak
+CONFIG_FILE ?= $(CURDIR)/config.mak
+-include $(CONFIG_FILE)
 
 SRC_DIRS = gcc-$(GCC_VER) binutils-$(BINUTILS_VER) musl-$(MUSL_VER) \
 	$(if $(GMP_VER),gmp-$(GMP_VER)) \
@@ -176,13 +177,16 @@ $(BUILD_DIR)/config.mak: | $(BUILD_DIR)
 	$(if $(MPFR_VER),"MPFR_SRCDIR = $(REL_TOP)/mpfr-$(MPFR_VER)") \
 	$(if $(ISL_VER),"ISL_SRCDIR = $(REL_TOP)/isl-$(ISL_VER)") \
 	$(if $(LINUX_VER),"LINUX_SRCDIR = $(REL_TOP)/linux-$(LINUX_VER)") \
-	"-include $(REL_TOP)/config.mak"
+	"-include $(CONFIG_FILE)"
 
 all: | $(SRC_DIRS) $(BUILD_DIR) $(BUILD_DIR)/Makefile $(BUILD_DIR)/config.mak
 	cd $(BUILD_DIR) && $(MAKE) $@
 
 install: | $(SRC_DIRS) $(BUILD_DIR) $(BUILD_DIR)/Makefile $(BUILD_DIR)/config.mak
 	cd $(BUILD_DIR) && $(MAKE) OUTPUT=$(OUTPUT) $@
+
+bundle: | $(OUTPUT)
+	cd $(OUTPUT)/../ && tar -vczf "$(shell basename $(OUTPUT)).tgz" $(shell basename $(OUTPUT))
 
 endif
 
