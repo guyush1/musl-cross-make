@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 if [[ "$#" -ne 1 ]]; then
-    echo "USAGE: ./build_gdb.sh <path_to_gdb_preset> <tar_filename>"
+    echo "USAGE: ./build_gdb.sh <path_to_gdb_preset>"
     exit 1
 fi
 
